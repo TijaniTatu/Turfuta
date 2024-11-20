@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "534871278650",
+    "project_id": "turfuta-67b91",
+    "storage_bucket": "turfuta-67b91.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534871278650:android:1ed565d4ab0aaf24ada103",
+        "android_client_info": {
+          "package_name": "com.example.turfuta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_f0JnBx9_ipY1YyBrCv1JFjkZMoGNEBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

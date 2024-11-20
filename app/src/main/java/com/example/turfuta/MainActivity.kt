@@ -15,6 +15,7 @@ import com.example.turfuta.ui.theme.TurfutaTheme
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.turfuta.navigation.AppNavGraph
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +23,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val authViewModel: AuthViewModel by viewModels()
-
+//        installSplashScreen().setKeepOnScreenCondition(){
+//            true
+//        }
         setContent {
             TurfutaTheme {
                 Scaffold(modifier =  Modifier.fillMaxSize()) { innerPadding ->

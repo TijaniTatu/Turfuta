@@ -12,6 +12,7 @@ import com.example.turfuta.pages.LoginPage
 import androidx.compose.ui.Modifier
 import com.example.turfuta.AuthViewModel
 import com.example.turfuta.pages.BuildProfilePage
+import com.example.turfuta.pages.ProfilePage
 
 
 import com.example.turfuta.pages.SignupPage
@@ -30,6 +31,10 @@ fun AppNavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
 
         composable("home") {
             HomePage(navController) // Pass the navController
+        }
+
+        composable("profile") {
+            ProfilePage(modifier)
         }
 
         composable("splash") {

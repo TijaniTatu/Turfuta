@@ -6,8 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.turfuta.ui.theme.TurfutaTheme
@@ -23,9 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val authViewModel: AuthViewModel by viewModels()
-//        installSplashScreen().setKeepOnScreenCondition(){
-//            true
-//        }
+        //installSplashScreen()
         setContent {
             TurfutaTheme {
                 Scaffold(modifier =  Modifier.fillMaxSize()) { innerPadding ->

@@ -80,10 +80,15 @@ dependencies {
 
     implementation ("androidx.compose.material3:material3:<latest_version>")
 
-        implementation ("androidx.compose.material:material:<latest_version>")
+    implementation ("androidx.compose.material:material:<latest_version>")
 
 
+    implementation ("androidx.paging:paging-compose:3.3.4")
+    implementation ("com.google.accompanist:accompanist-pager:0.28.0") // Or the latest version
+    implementation ("androidx.navigation:navigation-compose:2.6.0")
 
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
     implementation("io.coil-kt:coil-compose:2.7.0")
 

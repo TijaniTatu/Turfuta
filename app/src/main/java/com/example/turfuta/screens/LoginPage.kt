@@ -1,6 +1,5 @@
-package com.example.turfuta.pages
+package com.example.turfuta.screens
 
-import android.widget.Button
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

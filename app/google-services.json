@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "534871278650",
-    "project_id": "turfuta-67b91",
-    "storage_bucket": "turfuta-67b91.firebasestorage.app"
+    "project_number": "93399060513",
+    "firebase_url": "https://huduma-4bc13-default-rtdb.firebaseio.com",
+    "project_id": "huduma-4bc13",
+    "storage_bucket": "huduma-4bc13.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:534871278650:android:1ed565d4ab0aaf24ada103",
+        "mobilesdk_app_id": "1:93399060513:android:adb46bca07d3e824001360",
         "android_client_info": {
           "package_name": "com.example.turfuta"
         }
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC_f0JnBx9_ipY1YyBrCv1JFjkZMoGNEBY"
+          "current_key": "AIzaSyDs7mWdPjY6fiA3riF-YRzSzb0-TF_Oh5o"
         }
       ],
       "services": {

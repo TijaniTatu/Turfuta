@@ -1,4 +1,4 @@
-package com.example.turfuta.pages
+package com.example.turfuta.screens
 
 import android.net.Uri
 import android.widget.Toast

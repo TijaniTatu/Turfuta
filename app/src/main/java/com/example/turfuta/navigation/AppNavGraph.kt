@@ -66,6 +66,10 @@ fun AppNavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
             ProfileScreen()
         }
 
+        composable("profile") {
+            ProfilePage(modifier)
+        }
+
         composable("splash") {
             SplashScreen(onTimeout = {
                 // Navigate to the login page from splash

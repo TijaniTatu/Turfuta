@@ -82,6 +82,8 @@ dependencies {
 
     implementation ("androidx.compose.material:material:<latest_version>")
 
+    implementation ("androidx.navigation:navigation-compose:2.7.3")
+    implementation ("com.google.accompanist:accompanist-pager:0.31.1-alpha")
 
     implementation ("androidx.paging:paging-compose:3.3.4")
     implementation ("com.google.accompanist:accompanist-pager:0.28.0") // Or the latest version

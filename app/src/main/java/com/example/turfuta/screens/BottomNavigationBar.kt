@@ -1,5 +1,6 @@
 package com.example.turfuta.screens
 
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
@@ -13,35 +14,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+
 @Composable
 fun BottomNavigationBar(
-    navController: NavHostController,
-    currentRoute: String
+    pagerState: PagerState,
+    onPageSelected: (Int) -> Unit
 ) {
     NavigationBar(
-        containerColor = Color(0xFF1B5E20) // Green
+        containerColor = Color(0xFF1B5E20) // Dark Green for the background
     ) {
-        val items = listOf("home", "search", "history", "profile")
+        val items = listOf("Home", "Search", "History", "Profile")
+        items.forEachIndexed { index, label ->
+            val isSelected = pagerState.currentPage == index
+            val selectedColor = Color(0xFF81C784) // Light Green for selected item
+            val unselectedColor = Color(0xFF388E3C) // A lighter green for unselected items
 
-        items.forEach { screen ->
             NavigationBarItem(
-                selected = currentRoute == screen,
-                onClick = {
-                    navController.navigate(screen) {
-                        // Pop up to the root screen (optional based on behavior you want)
-                        popUpTo("home") { inclusive = true }
-                    }
-                },
+                selected = isSelected,
+                onClick = { onPageSelected(index) },
                 icon = {
-                    when (screen) {
-                        "home" -> Icon(Icons.Default.Home, contentDescription = "Home")
-                        "search" -> Icon(Icons.Default.Search, contentDescription = "Search")
-                        "history" -> Icon(Icons.Default.DateRange, contentDescription = "History")
-                        "profile" -> Icon(Icons.Default.Person, contentDescription = "Profile")
-                        else -> Icon(Icons.Default.Home, contentDescription = "Unknown")
+                    when (index) {
+                        0 -> Icon(Icons.Default.Home, contentDescription = "Home", tint = if (isSelected) selectedColor else unselectedColor)
+                        1 -> Icon(Icons.Default.Search, contentDescription = "Search", tint = if (isSelected) selectedColor else unselectedColor)
+                        2 -> Icon(Icons.Default.DateRange, contentDescription = "History", tint = if (isSelected) selectedColor else unselectedColor)
+                        3 -> Icon(Icons.Default.Person, contentDescription = "Profile", tint = if (isSelected) selectedColor else unselectedColor)
                     }
                 },
-                label = { Text(screen.capitalize(), color = Color.White) }
+                label = {
+                    Text(
+                        label,
+                        color = if (isSelected) selectedColor else unselectedColor
+                    )
+                }
             )
         }
     }

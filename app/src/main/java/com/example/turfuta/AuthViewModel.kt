@@ -12,15 +12,35 @@ import com.google.firebase.storage.StorageReference
 
 class AuthViewModel : ViewModel() {
 
-    private val auth : FirebaseAuth = FirebaseAuth.getInstance()
+    val isUserLoggedIn: Boolean = false
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
+    private val _username = MutableLiveData<String>("")
+    val username: LiveData<String> get() = _username
 
     init {
         checkAuthStatus()
+        fetchUsername()
+
+    }
+
+    private fun fetchUsername() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            FirebaseFirestore.getInstance().collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    _username.value = document.getString("username") ?: "Unknown"
+                }
+                .addOnFailureListener {
+                    _username.value = "Error"
+                }
+        }
     }
 
     fun checkAuthStatus(){
@@ -71,6 +91,7 @@ class AuthViewModel : ViewModel() {
     fun signout(){
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
+        _username.value = ""
     }
 
     fun buildProfile(

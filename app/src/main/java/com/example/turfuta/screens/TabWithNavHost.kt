@@ -20,7 +20,7 @@ fun TabWithNavHost(tab: String) {
                 "home" -> HomeScreen(navController)
                 "search" -> SearchScreen(navController)
                 "history" -> HistoryScreen(navController)
-                "profile" -> ProfileScreen(navController)
+                "profile" -> ProfileScreen()
             }
         }
         composable("$tab/details") {

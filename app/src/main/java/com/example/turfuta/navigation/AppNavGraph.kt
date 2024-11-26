@@ -13,6 +13,7 @@ import com.example.turfuta.pages.ProfilePage
 import com.example.turfuta.screens.LoginPage
 import com.example.turfuta.screens.SignupPage
 import com.example.turfuta.screens.HomePage
+import com.example.turfuta.screens.owners.OwnerHomeScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -63,6 +64,10 @@ fun AppNavGraph(
         // Profile Page
         composable("profile") {
             ProfilePage()
+        }
+
+        composable("ownerhome") {
+            OwnerHomeScreen()
         }
     }
 }

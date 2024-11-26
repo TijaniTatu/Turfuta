@@ -9,7 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,9 +32,18 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.compose.ui.draw.clip
+
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import com.example.turfuta.AuthViewModel
+
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(navController: NavHostController, authViewModel: AuthViewModel) {
+
     val auth = FirebaseAuth.getInstance()
     val firestore = FirebaseFirestore.getInstance()
 
@@ -53,57 +67,61 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ){
-        if (profilePhotoUrl.isNotEmpty()) {
-            Image(
-                painter = rememberAsyncImagePainter(profilePhotoUrl),
-                contentDescription = "Profile Photo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .padding(8.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "No Image",
-                    fontSize = 14.sp,
-                    color = Color.White
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ){
+            if (profilePhotoUrl.isNotEmpty()) {
+                Image(
+                    painter = rememberAsyncImagePainter(profilePhotoUrl),
+                    contentDescription = "Profile Photo",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(8.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
+            }else {
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray),
+                    contentAlignment = Alignment.Center
+                ){
+                    androidx.compose.material.Text(
+                        text = "No Image",
+                        fontSize = 14.sp,
+                        color = Color.White
+                    )
+                }
+            }
+
+            //Username
+            androidx.compose.material.Text(
+                text = username,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+
+            //UserType
+            androidx.compose.material.Text(
+                text = userType,
+                fontSize = 16.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            Button(onClick = {
+                authViewModel.signout()
+            }) {
+                Text("Logout")
             }
         }
-
-        // Username
-        Text(
-            text = username,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        // UserType
-        Text(
-            text = when (userType) {
-                "turf_owner" -> "Turf Owner"
-                "looking_for_turf" -> "Looking for Turf"
-                else -> "Unknown"
-            },
-            fontSize = 16.sp,
-            color = Color.Gray,
-            modifier = Modifier.padding(top = 8.dp)
-        )
     }
 }

@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.turfuta.AuthState
 import com.example.turfuta.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
@@ -36,12 +38,34 @@ fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authV
         mutableStateOf("")
     }
 
+    var userType by remember {
+        mutableStateOf("")
+    }
+
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
 
     LaunchedEffect(authState.value) {
         when(authState.value){
-            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Authenticated -> {
+                val auth = FirebaseAuth.getInstance()
+                val firestore = FirebaseFirestore.getInstance()
+
+                val uid = auth.currentUser?.uid
+                if(uid != null){
+                    firestore.collection("users").document(uid).get()
+                        .addOnSuccessListener { document ->
+                            userType = document.getString("userType").toString() ?: "Unkown"
+                            if(userType == "owner"){
+                                navController.navigate("ownerhome")
+                            }else{
+                                navController.navigate("home")
+                            }
+                        }.addOnFailureListener{
+                            userType = "Error"
+                        }
+                }
+            }
             is AuthState.Error -> Toast.makeText(context,
                 (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit

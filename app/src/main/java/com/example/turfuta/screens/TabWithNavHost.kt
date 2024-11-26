@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.turfuta.AuthViewModel
 import com.example.turfuta.screens.customers.HistoryScreen
 import com.example.turfuta.screens.customers.HomeScreen
 import com.example.turfuta.screens.customers.ProfileScreen
@@ -20,7 +21,7 @@ fun TabWithNavHost(tab: String) {
                 "home" -> HomeScreen(navController)
                 "search" -> SearchScreen(navController)
                 "history" -> HistoryScreen(navController)
-                "profile" -> ProfileScreen()
+                "profile" -> ProfileScreen(navController, authViewModel = AuthViewModel())
             }
         }
         composable("$tab/details") {

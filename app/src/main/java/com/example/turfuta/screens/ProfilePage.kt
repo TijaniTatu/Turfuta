@@ -97,8 +97,8 @@ fun ProfilePage(modifier: Modifier = Modifier) {
         //UserType
         Text(
             text = when (userType) {
-                "turf_owner" -> "Turf Owner"
-                "looking_for_turf" -> "Looking for Turf"
+                "owner" -> "Turf Owner"
+                "footballer" -> "Looking for Turf"
                 else -> "Unknown"
             },
             fontSize = 16.sp,

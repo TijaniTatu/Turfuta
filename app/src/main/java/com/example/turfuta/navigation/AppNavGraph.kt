@@ -26,7 +26,7 @@ fun AppNavGraph(
     // Navigation host setup
     NavHost(
         navController = navController,
-        startDestination = "splash"
+        startDestination = "login"
     ) {
         // Splash Screen
         composable("splash") {
@@ -40,8 +40,16 @@ fun AppNavGraph(
 
         // Login Page
         composable("login") {
-            LoginPage(navController = navController, authViewModel = authViewModel)
+            // Check if user is already logged in
+            if (authViewModel.isUserLoggedIn) {
+                navController.navigate("home") {
+                    popUpTo("login") { inclusive = true }
+                }
+            } else {
+                LoginPage(navController = navController, authViewModel = authViewModel)
+            }
         }
+
 
         // Signup Page
         composable("signup") {
@@ -61,5 +69,6 @@ fun AppNavGraph(
         composable("ownerhome") {
             OwnerHomeScreen(navController = navController)
         }
+
     }
 }

@@ -81,7 +81,8 @@ dependencies {
     implementation ("androidx.compose.material3:material3:<latest_version>")
 
     implementation ("androidx.compose.material:material:<latest_version>")
-
+    implementation ("androidx.compose.runtime:runtime-livedata:<compose_version>")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:<version>")
     implementation ("androidx.navigation:navigation-compose:2.7.3")
     implementation ("com.google.accompanist:accompanist-pager:0.31.1-alpha")
 

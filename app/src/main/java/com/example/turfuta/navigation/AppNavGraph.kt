@@ -59,7 +59,7 @@ fun AppNavGraph(
         }
 
         composable("ownerhome") {
-            OwnerHomeScreen()
+            OwnerHomeScreen(navController = navController)
         }
     }
 }

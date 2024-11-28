@@ -1,6 +1,5 @@
 package com.example.turfuta.screens.customers
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,15 +18,10 @@ import android.app.TimePickerDialog
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.platform.LocalContext
-import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("DefaultLocale")
 @Composable
 fun TurfDetailsScreen(
     navController: NavHostController,
@@ -41,12 +35,9 @@ fun TurfDetailsScreen(
 
     val turf by authViewModel.turfDetails.collectAsState()
 
-    // Define states for manual date and time input
-    var manualDate by remember { mutableStateOf("") }
-    var manualTime by remember { mutableStateOf("") }
-    var showSuccessDialog by remember { mutableStateOf(false) }
-
-    val context = LocalContext.current
+    // Define states for the date and time input
+    var selectedDate by remember { mutableStateOf<String?>(null) }
+    var selectedTime by remember { mutableStateOf<String?>(null) }
 
     // Display loading state
     if (turf == null) {
@@ -54,21 +45,46 @@ fun TurfDetailsScreen(
         return
     }
 
+    // Get current date and time for picker dialogs
+    val calendar = Calendar.getInstance()
+
+    // Create DatePickerDialog and TimePickerDialog outside of remember
+    val context = LocalContext.current
+
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                // Format the selected date
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                calendar.set(year, month, dayOfMonth)
+                selectedDate = sdf.format(calendar.time)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    val timePickerDialog = remember {
+        TimePickerDialog(
+            context,
+            { _: TimePicker, hourOfDay: Int, minute: Int ->
+                selectedTime = String.format("%02d:%02d", hourOfDay, minute)
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            false
+        )
+    }
+
+    // Display the details of the selected turf
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Top bar with back button
-        TopAppBar(
-            title = { Text("Turf Details") },
-            navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                }
-            }
-        )
-
         // Turf Image
         val imageUrl = turf?.images?.firstOrNull() ?: ""
         Image(
@@ -105,77 +121,53 @@ fun TurfDetailsScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Manual Date Input
+        // Date Picker
         OutlinedTextField(
-            value = manualDate,
-            onValueChange = { manualDate = it },
-            label = { Text("Enter Date (yyyy-MM-dd)") },
+            value = selectedDate ?: "Select Date",
+            onValueChange = {},
+            label = { Text("Select Date") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
+                .clickable {
+                    datePickerDialog.show()
+                }
         )
 
-        // Manual Time Input
+        // Time Picker
         OutlinedTextField(
-            value = manualTime,
-            onValueChange = { manualTime = it },
-            label = { Text("Enter Time (HH:mm)") },
+            value = selectedTime ?: "Select Time",
+            onValueChange = {},
+            label = { Text("Select Time") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
+                .clickable {
+                    timePickerDialog.show()
+                }
         )
 
         // Button to book the turf
         Button(
             onClick = {
-                val dateRegex = Regex("""\d{4}-\d{2}-\d{2}""")
-                val timeRegex = Regex("""\d{2}:\d{2}""")
-
-                if (!manualDate.matches(dateRegex) || !manualTime.matches(timeRegex)) {
-                    Toast.makeText(context, "Invalid date or time format!", Toast.LENGTH_LONG).show()
-                    return@Button
+                if (selectedDate != null && selectedTime != null) {
+                    // Call the updated booking function in the ViewModel
+                    authViewModel.bookTurf(
+                        turfId,
+                        "userId", // Get the current user's ID
+                        selectedDate!!,
+                        selectedTime!!,  // Pass the selected time
+                        (turf?.cost ?: "0.0").toString()
+                    )
+                } else {
+                    // Show error: date or time not selected
+                    Toast.makeText(context, "Please select both date and time", Toast.LENGTH_SHORT).show()
                 }
-
-                val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-                if (currentUserId == null) {
-                    Toast.makeText(context, "You need to log in first!", Toast.LENGTH_LONG).show()
-                    return@Button
-                }
-
-                // Book the turf using the valid input values
-                authViewModel.bookTurf(
-                    turfId,
-                    currentUserId,
-                    manualDate,
-                    manualTime,
-                    (turf?.cost ?: "0.0").toString()
-                )
-
-                showSuccessDialog = true
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Book This Turf")
         }
     }
-
-    // Success Alert Dialog
-    if (showSuccessDialog) {
-        AlertDialog(
-            onDismissRequest = { showSuccessDialog = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    showSuccessDialog = false
-
-                    navController.navigate("Home") {
-                        popUpTo("TurfDetailsRoute") { inclusive = true }
-                    }
-                }) {
-                    Text("OK")
-                }
-            },
-            title = { Text("Booking Successful") },
-            text = { Text("Your turf booking has been confirmed!") }
-        )
-    }
 }
+

@@ -174,7 +174,7 @@ fun ManageTurfScreen(userId: String, db: FirebaseFirestore, storage: FirebaseSto
         images = turfDoc.get("images") as? List<String> ?: emptyList()
         turfName = turfDoc.getString("name") ?: "Unkown"
         timesAvailable = turfDoc.getString("timeAvailable") ?: "00:00"
-        cost = turfDoc.getString("cost") ?: "0"
+        cost = turfDoc.get("cost").toString()
         location = turfDoc.getString("location") ?: "Unknown"
         loading = false
     }

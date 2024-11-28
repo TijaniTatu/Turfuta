@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF04764E),
+    primary = GreenPrimary, // Set green as primary for dark theme
     onPrimary = Color.White,
     background = Color(0xFF121212),
     onBackground = Color(0xFFFFFFFF),
@@ -22,13 +22,14 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF04764E),
+    primary = GreenPrimary, // Set green as primary for light theme
     onPrimary = Color.White,
-    background = Color(0xFFF8F8F8),
+    background = GrayBackground, // Light background
     onBackground = Color(0xFF373737),
     surface = Color.White,
     onSurface = Color(0xFF373737)
 )
+
 
 
 @Composable

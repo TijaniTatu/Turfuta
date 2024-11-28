@@ -30,11 +30,13 @@ data class Turf(
 )
 
 data class Booking(
-    val userId: String,
-    val turfId: String,
-    val turfOwnerId: String,
-    val bookingTime: String, // You can format this as needed
-    val status: String = "pending" // You can set this to "pending", "confirmed", etc.
+    val userId: String = "",
+    val turfId: String = "",
+    val turfOwnerId: String = "",
+    val bookingDate: String = "",
+    val bookingTime: String = "",
+    val cost: String = "",
+    val status: String = "pending"
 )
 
 
@@ -59,7 +61,8 @@ class AuthViewModel : ViewModel() {
     val searchResults: StateFlow<List<Turf>> = _searchResults
     private val _turfDetails = MutableStateFlow<Turf?>(null)
     val turfDetails: StateFlow<Turf?> = _turfDetails
-
+    private val _userBookings = MutableStateFlow<List<Booking>>(emptyList())
+    val userBookings: StateFlow<List<Booking>> = _userBookings
     init {
         checkAuthStatus()
         fetchUsername()
@@ -260,6 +263,23 @@ class AuthViewModel : ViewModel() {
                 onResult(null) // Handle error by passing null
             }
     }
+    fun fetchUserBookings(userId: String) {
+        viewModelScope.launch {
+            try {
+                val bookings = firestore.collection("bookings")
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .await()
+                    .documents
+                    .mapNotNull { it.toObject(Booking::class.java) }
+                _userBookings.value = bookings
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Error fetching user bookings: ${e.message}")
+                _userBookings.value = emptyList()
+            }
+        }
+    }
+
 
     fun bookTurf(
         turfId: String,
@@ -293,6 +313,60 @@ class AuthViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e("BookTurf", "Error during booking: ${e.message}")
+            }
+        }
+    }
+    fun fetchUserBookingsWithTurfNames(userId: String) {
+        viewModelScope.launch {
+            try {
+                // Fetch bookings for the user
+                val bookingDocs = firestore.collection("bookings")
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .await()
+                    .documents
+
+                val bookingsWithTurfNames = bookingDocs.mapNotNull { bookingDoc ->
+                    val booking = bookingDoc.toObject(Booking::class.java) ?: return@mapNotNull null
+                    val turfId = booking.turfId
+
+                    // Fetch the associated turf's name
+                    val turfName = firestore.collection("turfs").document(turfId)
+                        .get()
+                        .await()
+                        .getString("name") ?: "Unknown Turf"
+
+                    // Return a modified booking object with the turf name
+                    booking.copy(turfId = turfName) // Replace turfId with the turf name
+                }
+
+                _userBookings.value = bookingsWithTurfNames
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Error fetching user bookings with turf names: ${e.message}")
+                _userBookings.value = emptyList()
+            }
+        }
+    }
+    fun fetchPendingBookings(userId: String) {
+        viewModelScope.launch {
+            try {
+                isLoading.value = true // Add a loading indicator
+                val bookingsSnapshot = firestore.collection("bookings")
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("status", "pending")
+                    .get()
+                    .await()
+
+                // Map the documents to Booking objects
+                val bookings = bookingsSnapshot.documents.mapNotNull { it.toObject(Booking::class.java) }
+
+                Log.d("PendingBookings", "Fetched ${bookings.size} pending bookings for user: $userId")
+                _userBookings.value = bookings
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Error fetching pending bookings: ${e.message}")
+                _userBookings.value = emptyList()
+            } finally {
+                isLoading.value = false // Remove the loading indicator
             }
         }
     }

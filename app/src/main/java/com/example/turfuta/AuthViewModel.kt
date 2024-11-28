@@ -265,36 +265,33 @@ class AuthViewModel : ViewModel() {
         turfId: String,
         userId: String,
         bookingDate: String,
-        bookingTime: String,  // New parameter for the booking time
+        bookingTime: String,
         cost: String
     ) {
         viewModelScope.launch {
             try {
-                // Get the turf details
                 val turfRef = firestore.collection("turfs").document(turfId)
                 val turf = turfRef.get().await().toObject(Turf::class.java)
 
                 if (turf != null && turf.availability) {
-                    // Add a new booking document to Firestore, including booking time
+                    // Add booking to Firestore
                     val booking = hashMapOf(
                         "userId" to userId,
                         "turfId" to turfId,
                         "bookingDate" to bookingDate,
-                        "bookingTime" to bookingTime,  // Store the booking time
+                        "bookingTime" to bookingTime,
                         "cost" to cost
                     )
                     firestore.collection("bookings").add(booking).await()
 
-                    // Update the turf's availability (set it to false)
-                    turfRef.update("availability", false).await()
 
-                    // Optionally, notify the user about the successful booking
+
+                    // Notify success
+                    Log.d("BookTurf", "Booking successful!")
                 } else {
-                    // Handle the case when turf is not available
-                    // Optionally, show a message to the user
+                    Log.e("BookTurf", "Turf not available or does not exist.")
                 }
             } catch (e: Exception) {
-                // Handle error, maybe show a toast or dialog
                 Log.e("BookTurf", "Error during booking: ${e.message}")
             }
         }

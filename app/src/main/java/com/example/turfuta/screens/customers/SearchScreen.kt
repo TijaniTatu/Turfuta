@@ -144,7 +144,6 @@ fun SearchScreen(
         }
     }
 }
-
 @Composable
 fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
     Card(
@@ -200,3 +199,4 @@ fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
         }
     }
 }
+

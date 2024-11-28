@@ -145,7 +145,6 @@ fun CustomTopBar(
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    appNavController: NavHostController,
     authViewModel: AuthViewModel = viewModel()
 ) {
     val username = authViewModel.username.value ?: "Guest"
@@ -160,7 +159,7 @@ fun HomeScreen(
         topBar = {
             CustomTopBar(
                 username = username,
-                navController = appNavController,
+                navController = navController, // Use navController directly here
                 authViewModel = authViewModel
             )
         },

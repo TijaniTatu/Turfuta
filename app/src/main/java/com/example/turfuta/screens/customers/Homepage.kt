@@ -1,4 +1,4 @@
-package com.example.turfuta.screens
+package com.example.turfuta.screens.customers
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -11,12 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import com.example.turfuta.AuthViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.turfuta.screens.BottomNavigationBar
 
 @Composable
-fun HomePage() {
-    // Global Navigation Controller for the whole app
-    val appNavController = rememberNavController()
-
+fun HomePage(navController: NavHostController, authViewModel: AuthViewModel = viewModel()) {
     val pagerState = rememberPagerState(pageCount = { 4 })
     val coroutineScope = rememberCoroutineScope()
 
@@ -35,10 +37,10 @@ fun HomePage() {
             modifier = Modifier.padding(innerPadding)
         ) { page ->
             when (page) {
-                0 -> TabWithNavHost("home", appNavController)
-                1 -> TabWithNavHost("search", appNavController)
-                2 -> TabWithNavHost("history", appNavController)
-                3 -> TabWithNavHost("profile", appNavController)
+                0 -> HomeScreen(navController = navController) // Pass navController
+                1 -> SearchScreen(navController = navController, authViewModel = authViewModel)
+                2 -> HistoryScreen(navController = navController)
+                3 -> ProfileScreen(navController = navController, authViewModel = authViewModel)
                 else -> Text("Page not found", color = Color.Red, textAlign = TextAlign.Center)
             }
         }

@@ -2,7 +2,6 @@ package com.example.turfuta.navigation
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +11,8 @@ import com.example.turfuta.SplashScreen
 import com.example.turfuta.pages.ProfilePage
 import com.example.turfuta.screens.LoginPage
 import com.example.turfuta.screens.SignupPage
-import com.example.turfuta.screens.HomePage
+import com.example.turfuta.screens.customers.HomePage
+import com.example.turfuta.screens.customers.TurfDetailsScreen
 import com.example.turfuta.screens.owners.OwnerHomeScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -20,7 +20,7 @@ import com.example.turfuta.screens.owners.OwnerHomeScreen
 fun AppNavGraph(
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel
-){
+) {
     val navController = rememberNavController()
 
     // Navigation host setup
@@ -56,10 +56,11 @@ fun AppNavGraph(
             SignupPage(navController = navController, authViewModel = authViewModel)
         }
 
-        // Home Page with Pager and BottomNavigation
         composable("home") {
-            HomePage()
+            HomePage(navController = navController, authViewModel = authViewModel)
         }
+
+
 
         // Profile Page
         composable("profile") {
@@ -69,6 +70,12 @@ fun AppNavGraph(
         composable("ownerhome") {
             OwnerHomeScreen(navController = navController)
         }
-
+        // Turf Details Screen (with dynamic turfId)
+        composable("turfDetails/{turfId}") { backStackEntry ->
+            val turfId = backStackEntry.arguments?.getString("turfId")
+            turfId?.let {
+                TurfDetailsScreen(navController = navController, turfId = it)
+            }
+        }
     }
 }

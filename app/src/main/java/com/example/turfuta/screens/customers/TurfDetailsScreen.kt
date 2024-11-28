@@ -1,5 +1,6 @@
 package com.example.turfuta.screens.customers
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,8 +14,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.turfuta.AuthViewModel
-import com.example.turfuta.Turf
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.widget.DatePicker
+import android.widget.TimePicker
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import java.text.SimpleDateFormat
+import java.util.*
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun TurfDetailsScreen(
     navController: NavHostController,
@@ -36,6 +45,39 @@ fun TurfDetailsScreen(
     if (turf == null) {
         Text(text = "Loading...", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
         return
+    }
+
+    // Get current date and time for picker dialogs
+    val calendar = Calendar.getInstance()
+
+    // Create DatePickerDialog and TimePickerDialog outside of remember
+    val context = LocalContext.current
+
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                // Format the selected date
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                calendar.set(year, month, dayOfMonth)
+                selectedDate = sdf.format(calendar.time)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    val timePickerDialog = remember {
+        TimePickerDialog(
+            context,
+            { _: TimePicker, hourOfDay: Int, minute: Int ->
+                selectedTime = String.format("%02d:%02d", hourOfDay, minute)
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            false
+        )
     }
 
     // Display the details of the selected turf
@@ -81,7 +123,7 @@ fun TurfDetailsScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Date and Time Picker
+        // Date Picker
         OutlinedTextField(
             value = selectedDate ?: "Select Date",
             onValueChange = {},
@@ -90,11 +132,11 @@ fun TurfDetailsScreen(
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
                 .clickable {
-                    // Show a date picker dialog
-                    // Use Android's DatePickerDialog or a custom implementation
+                    datePickerDialog.show()
                 }
         )
 
+        // Time Picker
         OutlinedTextField(
             value = selectedTime ?: "Select Time",
             onValueChange = {},
@@ -103,7 +145,7 @@ fun TurfDetailsScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .clickable {
-
+                    timePickerDialog.show()
                 }
         )
 
@@ -121,6 +163,7 @@ fun TurfDetailsScreen(
                     )
                 } else {
                     // Show error: date or time not selected
+                    Toast.makeText(context, "Please select both date and time", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -129,4 +172,3 @@ fun TurfDetailsScreen(
         }
     }
 }
-

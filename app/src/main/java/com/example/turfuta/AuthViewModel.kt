@@ -30,11 +30,13 @@ data class Turf(
 )
 
 data class Booking(
-    val userId: String,
-    val turfId: String,
-    val turfOwnerId: String,
-    val bookingTime: String, // You can format this as needed
-    val status: String = "pending" // You can set this to "pending", "confirmed", etc.
+    val userId: String = "",
+    val turfId: String = "",
+    val turfOwnerId: String = "",
+    val bookingDate: String = "",
+    val bookingTime: String = "",
+    val cost: String = "",
+    val status: String = "pending"
 )
 
 
@@ -59,7 +61,8 @@ class AuthViewModel : ViewModel() {
     val searchResults: StateFlow<List<Turf>> = _searchResults
     private val _turfDetails = MutableStateFlow<Turf?>(null)
     val turfDetails: StateFlow<Turf?> = _turfDetails
-
+    private val _userBookings = MutableStateFlow<List<Booking>>(emptyList())
+    val userBookings: StateFlow<List<Booking>> = _userBookings
     init {
         checkAuthStatus()
         fetchUsername()
@@ -260,6 +263,23 @@ class AuthViewModel : ViewModel() {
                 onResult(null) // Handle error by passing null
             }
     }
+    fun fetchUserBookings(userId: String) {
+        viewModelScope.launch {
+            try {
+                val bookings = firestore.collection("bookings")
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .await()
+                    .documents
+                    .mapNotNull { it.toObject(Booking::class.java) }
+                _userBookings.value = bookings
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Error fetching user bookings: ${e.message}")
+                _userBookings.value = emptyList()
+            }
+        }
+    }
+
 
     fun bookTurf(
         turfId: String,

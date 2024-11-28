@@ -16,12 +16,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class Turf(
-    val id: String = "",
-    val location: String = "",
-    val price: Double = 0.0,
-    val turfName: String = "",
-    val turfPhoto: String = ""
+    val id: String,
+    val availability: Boolean,
+    val cost: String,
+    val description: String,
+    val images: List<String>,
+    val location: String,
+    val name: String,
+    val timeAvailable: String
 )
+
 
 class AuthViewModel : ViewModel() {
 
@@ -181,29 +185,34 @@ class AuthViewModel : ViewModel() {
                     val turfList = result.documents.mapNotNull { document ->
                         Turf(
                             id = document.id,
+                            availability = document.getBoolean("availability") ?: false,
+                            cost = document.get("cost")?.toString() ?: "", // Convert cost to String
+                            description = document.getString("description") ?: "",
+                            images = document.get("images") as? List<String> ?: emptyList(),
                             location = document.getString("location") ?: "",
-                            price = document.getDouble("price") ?: 0.0,
-                            turfName = document.getString("turfName") ?: "",
-                            turfPhoto = document.getString("turfPhoto") ?: ""
+                            name = document.getString("name") ?: "",
+                            timeAvailable = document.getString("timeAvailable") ?: ""
                         )
                     }
                     _turfs.value = turfList
                 }
                 .addOnFailureListener {
-
                     _turfs.value = emptyList()
                 }
         }
     }
 
 
+
     fun searchTurfs(query: String, minPrice: Double? = null, maxPrice: Double? = null) {
         viewModelScope.launch {
             val filteredList = _turfs.value.filter { turf ->
                 val matchesQuery =
-                    query.isEmpty() || turf.location.contains(query, ignoreCase = true)
-                val matchesPrice = (minPrice == null || turf.price >= minPrice) &&
-                        (maxPrice == null || turf.price <= maxPrice)
+                    query.isEmpty() || turf.location.contains(query, ignoreCase = true) || turf.name.contains(query, ignoreCase = true)
+
+                val costAsDouble = turf.cost.toDoubleOrNull() ?: 0.0 // Convert cost to a Double for comparison
+                val matchesPrice = (minPrice == null || costAsDouble >= minPrice) &&
+                        (maxPrice == null || costAsDouble <= maxPrice)
 
                 matchesQuery && matchesPrice
             }

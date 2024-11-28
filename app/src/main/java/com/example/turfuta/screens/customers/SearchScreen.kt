@@ -161,9 +161,11 @@ fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val imageUrl = turf.images.firstOrNull() ?: "" // Default empty string if no image
+
             Image(
-                painter = rememberAsyncImagePainter(turf.turfPhoto),
-                contentDescription = turf.turfName,
+                painter = rememberAsyncImagePainter(imageUrl),
+                contentDescription = turf.name,
                 modifier = Modifier
                     .size(80.dp)
                     .padding(end = 16.dp)
@@ -174,7 +176,7 @@ fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = turf.turfName,
+                    text = turf.name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -184,12 +186,11 @@ fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "Price: ${turf.price}",
+                    text = "Price: ${turf.cost}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
             }
-            //WILL ADD FAVORITE BOOKMARK SECTION LATER
             IconButton(onClick = { /* Add to favorite or another action */ }) {
                 Icon(
                     imageVector = Icons.Default.FavoriteBorder,
@@ -199,7 +200,3 @@ fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
         }
     }
 }
-
-
-
-

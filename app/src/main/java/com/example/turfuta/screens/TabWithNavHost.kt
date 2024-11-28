@@ -1,6 +1,6 @@
 package com.example.turfuta.screens
 
-import BookingScreen
+
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -46,27 +46,7 @@ fun TabWithNavHost(tab: String, appNavController: NavHostController) {
         }
 
 
-        composable("$tab/booking/{turfId}") { backStackEntry ->
-            val turfId = backStackEntry.arguments?.getString("turfId")
-            var turf by remember { mutableStateOf<Turf?>(null) }
 
-
-            LaunchedEffect(turfId) {
-                if (turfId != null) {
-                    authViewModel.getTurfById(turfId) { fetchedTurf ->
-                        turf = fetchedTurf
-                    }
-                }
-            }
-
-
-            if (turf != null) {
-                BookingScreen(navController = tabNavController, turf = turf!!)
-            } else {
-
-                CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-            }
-        }
     }
 }
 

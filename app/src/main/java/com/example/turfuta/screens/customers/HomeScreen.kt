@@ -158,7 +158,11 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            CustomTopBar(username = username, navController = appNavController, authViewModel = authViewModel)
+            CustomTopBar(
+                username = username,
+                navController = appNavController,
+                authViewModel = authViewModel
+            )
         },
         content = { paddingValues ->
             Surface(
@@ -190,19 +194,23 @@ fun HomeScreen(
                                     .fillMaxWidth()
                                     .padding(16.dp)
                             ) {
-                                Image(
-                                    painter = rememberAsyncImagePainter(turf.turfPhoto),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(250.dp)
-                                        .clip(MaterialTheme.shapes.medium)
-                                )
+                                // Display the first image in the array
+                                if (turf.images.isNotEmpty()) {
+                                    Image(
+                                        painter = rememberAsyncImagePainter(turf.images[0]),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(250.dp)
+                                            .clip(MaterialTheme.shapes.medium),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 Text(
-                                    text = turf.turfName,
+                                    text = turf.name,
                                     style = MaterialTheme.typography.headlineSmall.copy(
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 22.sp
@@ -213,7 +221,21 @@ fun HomeScreen(
                                 Spacer(modifier = Modifier.height(4.dp))
 
                                 Text(
-                                    text = turf.location,
+                                    text = "Location: ${turf.location}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+
+                                Text(
+                                    text = "Cost: ${turf.cost}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+
+                                Text(
+                                    text = "Available: ${turf.timeAvailable}",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                                     modifier = Modifier.padding(top = 4.dp)
@@ -221,6 +243,7 @@ fun HomeScreen(
                             }
                         }
 
+                        // Indicator Dots
                         Row(
                             modifier = Modifier
                                 .wrapContentHeight()
@@ -257,5 +280,3 @@ fun HomeScreen(
         }
     )
 }
-
-

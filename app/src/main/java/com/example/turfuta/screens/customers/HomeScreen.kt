@@ -40,108 +40,6 @@ import com.example.turfuta.Booking
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CustomTopBar(
-    username: String,
-    navController: NavHostController,
-    authViewModel: AuthViewModel
-) {
-    var showMenu by remember { mutableStateOf(false) }
-    var profilePhotoUrl by remember { mutableStateOf("") }
-    var fetchedUsername by remember { mutableStateOf(username) }
-
-    LaunchedEffect(Unit) {
-        val auth = FirebaseAuth.getInstance()
-        val firestore = FirebaseFirestore.getInstance()
-
-        val uid = auth.currentUser?.uid
-        if (uid != null) {
-            firestore.collection("users").document(uid).get()
-                .addOnSuccessListener { document ->
-                    profilePhotoUrl = document.getString("profilePhotoUrl") ?: ""
-                    fetchedUsername = document.getString("username") ?: username
-                }
-        }
-    }
-
-    CenterAlignedTopAppBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp),
-        title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start // Align username to the left
-            ) {
-                Text(
-                    text = "Hello, $fetchedUsername!",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    modifier = Modifier.padding(start = 16.dp) // Add padding from the left
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = { showMenu = !showMenu }) {
-                if (profilePhotoUrl.isNotEmpty()) {
-                    Image(
-                        painter = rememberAsyncImagePainter(profilePhotoUrl),
-                        contentDescription = "Profile Menu",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = "Profile Menu",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
-
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text("Profile") },
-                    onClick = {
-                        showMenu = false
-                        navController.navigate("profile")
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text("Settings") },
-                    onClick = {
-                        showMenu = false
-                        navController.navigate("settings")
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text("Sign Out") },
-                    onClick = {
-                        showMenu = false
-                        authViewModel.signout()
-                        navController.navigate("login") {
-                            popUpTo("home") { inclusive = true }
-                        }
-                    }
-                )
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary
-        )
-    )
-}
-
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,10 +60,95 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            CustomTopBar(
-                username = username,
-                navController = navController,
-                authViewModel = authViewModel
+            var showMenu by remember { mutableStateOf(false) }
+            var profilePhotoUrl by remember { mutableStateOf("") }
+            var fetchedUsername by remember { mutableStateOf(username) }
+
+            LaunchedEffect(Unit) {
+                val auth = FirebaseAuth.getInstance()
+                val firestore = FirebaseFirestore.getInstance()
+
+                val uid = auth.currentUser?.uid
+                if (uid != null) {
+                    firestore.collection("users").document(uid).get()
+                        .addOnSuccessListener { document ->
+                            profilePhotoUrl = document.getString("profilePhotoUrl") ?: ""
+                            fetchedUsername = document.getString("username") ?: username
+                        }
+                }
+            }
+
+            CenterAlignedTopAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            text = "Hello, $fetchedUsername!",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showMenu = !showMenu }) {
+                        if (profilePhotoUrl.isNotEmpty()) {
+                            Image(
+                                painter = rememberAsyncImagePainter(profilePhotoUrl),
+                                contentDescription = "Profile Menu",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = "Profile Menu",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    }
+
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Profile") },
+                            onClick = {
+                                showMenu = false
+                                navController.navigate("profile")
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Settings") },
+                            onClick = {
+                                showMenu = false
+                                navController.navigate("settings")
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Sign Out") },
+                            onClick = {
+                                showMenu = false
+                                authViewModel.signout()
+                                navController.navigate("login") {
+                                    popUpTo("home") { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         },
         content = { paddingValues ->
@@ -175,7 +158,7 @@ fun HomeScreen(
                     .padding(paddingValues),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Pending Booking Section
+
                 item {
                     Column(
                         modifier = Modifier
@@ -301,8 +284,6 @@ fun HomeScreen(
         }
     )
 }
-
-
 
 @Composable
 fun PendingBookingCard(booking: Booking, onClick: () -> Unit) {

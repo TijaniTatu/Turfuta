@@ -21,13 +21,13 @@ fun BottomNavigationBar(
     onPageSelected: (Int) -> Unit
 ) {
     NavigationBar(
-        containerColor = Color(0xFF1B5E20) // Dark Green for the background
+        containerColor = Color(0xFF04764E) // Dark Green for the background
     ) {
         val items = listOf("Home", "Search", "History", "Profile")
         items.forEachIndexed { index, label ->
             val isSelected = pagerState.currentPage == index
             val selectedColor = Color(0xFF81C784) // Light Green for selected item
-            val unselectedColor = Color(0xFF388E3C) // A lighter green for unselected items
+            val unselectedColor = Color(0xFFFFFFFF) // A lighter green for unselected items
 
             NavigationBarItem(
                 selected = isSelected,

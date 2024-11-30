@@ -199,31 +199,57 @@ fun PendingBookingCard(booking: Booking, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)) // Light background for contrast
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
+            // Title with accent color
             Text(
                 text = "Pending Booking",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.primary
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF04764E)
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(text = "Turf: ${booking.turfId}")
-            Text(text = "Date: ${booking.bookingDate}")
-            Text(text = "Time: ${booking.bookingTime}")
-            Text(text = "Cost: ${booking.cost}")
+            // Booking details
+            Text(
+                text = "Turf: ${booking.turfId}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF333333)
+            )
+            Text(
+                text = "Date: ${booking.bookingDate}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF333333)
+            )
+            Text(
+                text = "Time: ${booking.bookingTime}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF333333)
+            )
+            Text(
+                text = "Cost: ${booking.cost}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF333333)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Button with accent color
             Button(
                 onClick = onClick,
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier.align(Alignment.End),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF04764E),
+                    contentColor = Color.White
+                )
             ) {
                 Text("View All Bookings")
             }

@@ -19,10 +19,11 @@ import com.example.turfuta.navigation.AppNavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val authViewModel: AuthViewModel by viewModels()
-        //installSplashScreen()
         setContent {
             TurfutaTheme {
                 Scaffold(modifier =  Modifier.fillMaxSize()) { innerPadding ->

@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -22,6 +22,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.turfuta.AuthViewModel
 import com.example.turfuta.Turf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     navController: NavHostController,
@@ -42,32 +43,16 @@ fun SearchScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Header Card
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            elevation = CardDefaults.cardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Find Your Turf",
-                    style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onPrimary),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Search for the best turf around you",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onPrimary)
-                )
-            }
-        }
+        // Header Section
+        Text(
+            text = "Find Your Turf",
+            style = MaterialTheme.typography.headlineMedium.copy(color = Color(0xFF04764E)),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = "Search for the best turf around you",
+            style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface)
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -75,8 +60,14 @@ fun SearchScreen(
         TextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Search by Location") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Search by Location", color = Color(0xFF04764E)) },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color(0xFF04764E),
+                unfocusedIndicatorColor = Color(0xFF04764E),
+                cursorColor = Color(0xFF04764E)
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -89,14 +80,26 @@ fun SearchScreen(
             TextField(
                 value = minPrice,
                 onValueChange = { minPrice = it },
-                label = { Text("Min Price") },
-                modifier = Modifier.weight(1f)
+                label = { Text("Min Price", color = Color(0xFF04764E)) },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color(0xFF04764E),
+                    unfocusedIndicatorColor = Color(0xFF04764E),
+                    cursorColor = Color(0xFF04764E)
+                ),
+                modifier = Modifier.weight(1f),
+                singleLine = true
             )
             TextField(
                 value = maxPrice,
                 onValueChange = { maxPrice = it },
-                label = { Text("Max Price") },
-                modifier = Modifier.weight(1f)
+                label = { Text("Max Price", color = Color(0xFF04764E)) },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color(0xFF04764E),
+                    unfocusedIndicatorColor = Color(0xFF04764E),
+                    cursorColor = Color(0xFF04764E)
+                ),
+                modifier = Modifier.weight(1f),
+                singleLine = true
             )
         }
 
@@ -110,13 +113,15 @@ fun SearchScreen(
                     maxPrice = maxPrice.toDoubleOrNull()
                 )
             },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF04764E)),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text("Search for Turfs")
+            Text("Search for Turfs", color = Color.White)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Search Results
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             val results = if (searchQuery.text.isEmpty() && minPrice.isEmpty() && maxPrice.isEmpty()) {
                 turfs
@@ -131,7 +136,8 @@ fun SearchScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface)
                     )
                 }
             } else {
@@ -144,15 +150,16 @@ fun SearchScreen(
         }
     }
 }
+
 @Composable
 fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick(turf) }, // Trigger navigation to the booking screen
+            .clickable { onClick(turf) },
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
     ) {
         Row(
             modifier = Modifier
@@ -176,27 +183,17 @@ fun TurfItem(turf: Turf, onClick: (Turf) -> Unit) {
             ) {
                 Text(
                     text = turf.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.titleMedium.copy(color = Color(0xFF04764E))
                 )
                 Text(
                     text = turf.location,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface)
                 )
                 Text(
                     text = "Price: ${turf.cost}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-            }
-            IconButton(onClick = { /* Add to favorite or another action */ }) {
-                Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
-                    contentDescription = "Add to Favorites"
+                    style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.secondary)
                 )
             }
         }
     }
 }
-

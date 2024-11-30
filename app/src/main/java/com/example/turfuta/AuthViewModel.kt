@@ -141,6 +141,7 @@ class AuthViewModel : ViewModel() {
         username: String,
         photoUri: Uri?,
         userType: String,
+        phone_number: String,
         onComplete: (Boolean, String?) -> Unit
     ) {
         val uid = auth.currentUser?.uid ?: return
@@ -156,6 +157,7 @@ class AuthViewModel : ViewModel() {
                             username,
                             downloadUrl.toString(),
                             userType,
+                            phone_number,
                             onComplete
                         )
                     }.addOnFailureListener { e ->
@@ -167,7 +169,7 @@ class AuthViewModel : ViewModel() {
                 }
         } else {
 
-            saveProfileToFirestore(uid, username, "", userType, onComplete)
+            saveProfileToFirestore(uid, username, "", userType, phone_number,onComplete)
         }
     }
 
@@ -176,12 +178,14 @@ class AuthViewModel : ViewModel() {
         username: String,
         profilePhotoUrl: String,
         userType: String,
+        phone_number: String,
         onComplete: (Boolean, String?) -> Unit
     ) {
         val userProfile = mapOf(
             "username" to username,
             "profilePhotoUrl" to profilePhotoUrl,
-            "userType" to userType
+            "userType" to userType,
+            "phone_number" to phone_number
         )
         firestore.collection("users").document(uid)
             .set(userProfile)
@@ -286,7 +290,9 @@ class AuthViewModel : ViewModel() {
         userId: String,
         bookingDate: String,
         bookingTime: String,
-        cost: String
+        cost: String,
+        userName: String,
+        userPhone: String
     ) {
         viewModelScope.launch {
             try {
@@ -294,9 +300,10 @@ class AuthViewModel : ViewModel() {
                 val turf = turfRef.get().await().toObject(Turf::class.java)
 
                 if (turf != null && turf.availability) {
-                    // Add booking to Firestore
                     val booking = hashMapOf(
                         "userId" to userId,
+                        "userName" to userName,
+                        "userPhone" to userPhone,
                         "turfId" to turfId,
                         "bookingDate" to bookingDate,
                         "bookingTime" to bookingTime,
@@ -304,9 +311,6 @@ class AuthViewModel : ViewModel() {
                     )
                     firestore.collection("bookings").add(booking).await()
 
-
-
-                    // Notify success
                     Log.d("BookTurf", "Booking successful!")
                 } else {
                     Log.e("BookTurf", "Turf not available or does not exist.")
@@ -316,6 +320,7 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
+
     fun fetchUserBookingsWithTurfNames(userId: String) {
         viewModelScope.launch {
             try {

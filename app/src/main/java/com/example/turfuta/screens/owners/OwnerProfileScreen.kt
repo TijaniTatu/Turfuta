@@ -82,33 +82,53 @@ fun OwnerProfileScreen(modifier: Modifier = Modifier, navController: NavControll
                 )
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Username Input
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Username", color = Color(0xFF04764E)) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF04764E),
+                cursorColor = Color(0xFF04764E)
+            )
         )
+
         Spacer(modifier = Modifier.height(8.dp))
 
         // Phone Number Input
         OutlinedTextField(
             value = phoneNumber,
             onValueChange = { phoneNumber = it },
-            label = { Text("Phone Number") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Phone Number", color = Color(0xFF04764E)) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF04764E),
+                cursorColor = Color(0xFF04764E)
+            )
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Save and Cancel Buttons
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = { updateUserData(userId, username.text, phoneNumber.text, selectedImageUri, db, storage) }) {
-                Text("Save")
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(
+                onClick = { updateUserData(userId, username.text, phoneNumber.text, selectedImageUri, db, storage) },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF04764E))
+            ) {
+                Text("Save", color = Color.White)
             }
-            Button(onClick = { /* Reset Changes or Navigate Back */ }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)) {
-                Text("Cancel")
+            Button(
+                onClick = { /* Reset Changes or Navigate Back */ },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
+            ) {
+                Text("Cancel", color = Color.White)
             }
         }
 
@@ -121,13 +141,16 @@ fun OwnerProfileScreen(modifier: Modifier = Modifier, navController: NavControll
                 navController.navigate("login")
             },
             modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF04764E))
         ) {
-            Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "Sign Out")
+            Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "Sign Out", tint = Color.White)
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Sign Out")
+            Text("Sign Out", color = Color.White)
         }
+
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Delete Account Button
         Button(
             onClick = {
                 userId?.let { id ->
@@ -139,26 +162,24 @@ fun OwnerProfileScreen(modifier: Modifier = Modifier, navController: NavControll
                             // Delete the user account in Firebase Authentication
                             auth.currentUser?.delete()?.addOnSuccessListener {
                                 // Trigger navigation after successful deletion
-                                //onDeleteAccount()
+                                navController.navigate("login")
                             }?.addOnFailureListener { exception ->
-                                // Handle deletion failure for user account
                                 exception.printStackTrace()
                             }
                         }.addOnFailureListener { exception ->
-                            // Handle failure in deleting the profile photo
                             exception.printStackTrace()
                         }
                     }.addOnFailureListener { exception ->
-                        // Handle failure in deleting the Firestore document
                         exception.printStackTrace()
                     }
                 }
             },
             modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
         ) {
-            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Account")
+            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Account", tint = Color.White)
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Delete Account")
+            Text("Delete Account", color = Color.White)
         }
     }
 }
@@ -185,8 +206,7 @@ private fun updateUserData(
             val photoRef = storage.reference.child("profile_photos/$it.jpg")
             photoRef.putFile(selectedImageUri).addOnSuccessListener {
                 photoRef.downloadUrl.addOnSuccessListener { uri ->
-                    // Update Firestore with New Photo URL
-                    db.collection("users").document(it.toString()).update("profile_photo_url", uri.toString())
+                    db.collection("users").document(it.toString()).update("profilePhotoUrl", uri.toString())
                 }
             }
         }

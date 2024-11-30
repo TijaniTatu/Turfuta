@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.turfuta.R
 import com.google.accompanist.pager.*
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 sealed class OwnerScreen(val route: String, val title: String, val icon: ImageVector) {
@@ -62,6 +63,7 @@ fun OwnerHomeScreen(modifier: Modifier = Modifier, navController: NavController)
 
     // Titles for each page
     val pageTitles = listOf("Home", "Bookings", "Profile", "TurfManagement")
+    val auth = FirebaseAuth.getInstance()
 
     Scaffold(
         topBar = {
@@ -135,6 +137,13 @@ fun OwnerHomeScreen(modifier: Modifier = Modifier, navController: NavController)
                                         showMenu = false
                                     }
                                 )
+                                androidx.compose.material3.DropdownMenuItem(
+                                    text = { Text("log out") },
+                                    onClick = {
+                                        auth.signOut()
+                                        navController.navigate("login")
+                                    }
+                                )
                             }
                         }
                     },
@@ -183,7 +192,7 @@ fun OwnerPager(
     ) { page ->
         when (items[page]) {
             OwnerScreen.Home -> Box(Modifier.fillMaxSize()) { OwnerHomePage() }
-            OwnerScreen.Bookings -> Box(Modifier.fillMaxSize()) { Text("Bookings Screen") }
+            OwnerScreen.Bookings -> Box(Modifier.fillMaxSize()) { BookingScreen() }
             OwnerScreen.Profile -> Box(Modifier.fillMaxSize()) { OwnerProfileScreen(navController = navController) }
             OwnerScreen.TurfManagement -> Box(Modifier.fillMaxSize()) { TurfManagementScreen() }
         }
@@ -198,7 +207,9 @@ fun OwnerBottomNavigation(
     onTabSelected: (Int) -> Unit
 ) {
 
-    NavigationBar {
+    NavigationBar (
+        containerColor = Color(0xFF04764E) // Dark Green for the background
+    ){
         items.forEachIndexed { index, screen->
             val isSelected = pagerState.currentPage == index
             NavigationBarItem(

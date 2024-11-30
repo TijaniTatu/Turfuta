@@ -23,11 +23,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.turfuta.AuthViewModel
 import com.example.turfuta.Booking
+import com.google.firebase.auth.FirebaseAuth
+
 @Composable
 fun HistoryScreen(navController: NavHostController, authViewModel: AuthViewModel = viewModel()) {
-    val userId = "userId" // Replace with the actual logged-in user's ID
+
+    val auth = FirebaseAuth.getInstance()
+
+    val userId = auth.currentUser?.uid
+
     LaunchedEffect(Unit) {
-        authViewModel.fetchUserBookingsWithTurfNames(userId)
+        if (userId != null) {
+            authViewModel.fetchUserBookingsWithTurfNames(userId)
+        }
     }
 
     val bookings by authViewModel.userBookings.collectAsState()

@@ -71,8 +71,10 @@ fun LoginPage(
                             val userType = document.getString("userType").toString()
                             if (userType == "owner") {
                                 navController.navigate("ownerhome")
-                            } else {
+                            } else if(userType == "footballer"){
                                 navController.navigate("home")
+                            }else{
+                                navController.navigate("buildprofile")
                             }
                         }.addOnFailureListener {
                             Toast.makeText(context, "Error fetching user type", Toast.LENGTH_SHORT).show()

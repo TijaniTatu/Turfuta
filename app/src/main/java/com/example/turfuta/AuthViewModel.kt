@@ -310,6 +310,7 @@ class AuthViewModel : ViewModel() {
                         "cost" to cost
                     )
                     firestore.collection("bookings").add(booking).await()
+                    firestore.collection("bookinghistory").add(booking).await()
 
                     Log.d("BookTurf", "Booking successful!")
                 } else {
@@ -325,7 +326,7 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // Fetch bookings for the user
-                val bookingDocs = firestore.collection("bookings")
+                val bookingDocs = firestore.collection("bookinghistory")
                     .whereEqualTo("userId", userId)
                     .get()
                     .await()
@@ -358,7 +359,6 @@ class AuthViewModel : ViewModel() {
                 isLoading.value = true // Add a loading indicator
                 val bookingsSnapshot = firestore.collection("bookings")
                     .whereEqualTo("userId", userId)
-                    .whereEqualTo("status", "pending")
                     .get()
                     .await()
 

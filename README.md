@@ -24,9 +24,25 @@ Turfuta is a mobile application that allows user to find and book available turf
 - <span style="color:#90EE90;">UI Framework</span>: [Jetpack Compose](https://developer.android.com/compose)  
 - <span style="color:#90EE90;">Backend</span>: [Firebase](https://firebase.google.com/) 
 - <span style="color:#90EE90;">Navigation</span>: [Jetpack Navigation Component](https://developer.android.com/guide/navigation)
-- <span style="color:#90EE90;">Additional Libraries</span>:  
-  - [Material3](https://m3.material.io/)
+- <span style="color:#90EE90;">Additional Libraries</span>: [Material3](https://m3.material.io/)
 
- 
+ # Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/turfuta.git
+```
+2. Open the project in Android Studio.
+
+3. Sync the project with Gradle files.
+
+4. Set up Firebase:
+
+    - Create a Firebase project in the Firebase Console.
+
+    - Add your app's `google-services.json` file to the app/ directory.
+
+5. Build and run the app on an Android device or emulator.
+
+
 
 
